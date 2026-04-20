@@ -1,0 +1,32 @@
+{
+  "@@locale": "en",
+  "app_title": "My Flutter App",
+  "@app_title": {
+    "description": "Main application title"
+  },
+  "welcome_message": "Welcome to our app!",
+  "@welcome_message": {
+    "description": "Greeting message on home screen"
+  },
+  "button_save": "Save",
+  "@button_save": {
+    "type": "button"
+  },
+  "button_cancel": "Cancel",
+  "@button_cancel": {
+    "type": "button"
+  },
+  "button_delete": "Delete",
+  "error_network": "Network error. Please try again.",
+  "@error_network": {
+    "type": "error"
+  },
+  "error_invalid_input": "Invalid input. Please check your data.",
+  "title_settings": "Settings",
+  "title_profile": "Profile",
+  "label_email": "Email",
+  "label_password": "Password",
+  "placeholder_search": "Search...",
+  "message_confirm_delete": "Are you sure you want to delete this item?",
+  "hint_enter_email": "Enter your email address"
+}

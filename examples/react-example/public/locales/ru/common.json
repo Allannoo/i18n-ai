@@ -1,0 +1,43 @@
+{
+  "common": {
+    "title": "Добро пожаловать",
+    "subtitle": "Создайте что-то удивительное",
+    "button": {
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "delete": "Удалить",
+      "confirm": "Подтвердить"
+    },
+    "error": {
+      "network": "Ошибка сети. Попробуйте снова.",
+      "notFound": "Страница не найдена",
+      "unauthorized": "Пожалуйста, войдите для продолжения"
+    }
+  },
+  "home": {
+    "greeting": "Здравствуйте, {name}!",
+    "description": "Это ваша панель управления. У вас {count} новых уведомлений.",
+    "actions": {
+      "viewAll": "Посмотреть все",
+      "dismiss": "Закрыть"
+    }
+  },
+  "settings": {
+    "title": "Настройки",
+    "sections": {
+      "account": "Аккаунт",
+      "privacy": "Конфиденциальность",
+      "notifications": "Уведомления"
+    },
+    "labels": {
+      "email": "Email адрес",
+      "password": "Пароль",
+      "language": "Язык"
+    }
+  },
+  "errors": {
+    "required": "Это поле обязательно для заполнения",
+    "invalidEmail": "Пожалуйста, введите корректный email",
+    "passwordTooShort": "Пароль должен быть не менее {minLength} символов"
+  }
+}

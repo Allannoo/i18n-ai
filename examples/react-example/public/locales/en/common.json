@@ -1,0 +1,43 @@
+{
+  "common": {
+    "title": "Welcome",
+    "subtitle": "Build something amazing",
+    "button": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "confirm": "Confirm"
+    },
+    "error": {
+      "network": "Network error. Please try again.",
+      "notFound": "Page not found",
+      "unauthorized": "Please log in to continue"
+    }
+  },
+  "home": {
+    "greeting": "Hello, {name}!",
+    "description": "This is your dashboard. You have {count} new notifications.",
+    "actions": {
+      "viewAll": "View All",
+      "dismiss": "Dismiss"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "sections": {
+      "account": "Account",
+      "privacy": "Privacy",
+      "notifications": "Notifications"
+    },
+    "labels": {
+      "email": "Email Address",
+      "password": "Password",
+      "language": "Language"
+    }
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email",
+    "passwordTooShort": "Password must be at least {minLength} characters"
+  }
+}

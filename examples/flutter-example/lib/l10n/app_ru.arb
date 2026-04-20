@@ -1,0 +1,17 @@
+{
+  "@@locale": "ru",
+  "app_title": "Моё Приложение",
+  "welcome_message": "Добро пожаловать!",
+  "button_save": "Сохранить",
+  "button_cancel": "Отмена",
+  "button_delete": "Удалить",
+  "error_network": "Ошибка сети. Попробуйте снова.",
+  "error_invalid_input": "Неверный ввод. Проверьте данные.",
+  "title_settings": "Настройки",
+  "title_profile": "Профиль",
+  "label_email": "Email",
+  "label_password": "Пароль",
+  "placeholder_search": "Поиск...",
+  "message_confirm_delete": "Вы уверены что хотите удалить этот элемент?",
+  "hint_enter_email": "Введите ваш email"
+}

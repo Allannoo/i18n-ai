@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- App Info -->
+    <string name="app_name">My Android App</string>
+    <string name="app_version">Version 1.0.0</string>
+    
+    <!-- Buttons -->
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_confirm">Confirm</string>
+    <string name="button_ok">OK</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    
+    <!-- Errors -->
+    <string name="error_network">Network error. Please try again.</string>
+    <string name="error_not_found">Page not found</string>
+    <string name="error_unauthorized">Please log in to continue</string>
+    <string name="error_required">This field is required</string>
+    <string name="error_invalid_email">Please enter a valid email</string>
+    
+    <!-- Labels -->
+    <string name="label_email">Email Address</string>
+    <string name="label_password">Password</string>
+    <string name="label_username">Username</string>
+    <string name="label_search">Search</string>
+    
+    <!-- Messages -->
+    <string name="message_welcome">Welcome to our app!</string>
+    <string name="message_confirm_delete">Are you sure you want to delete this item?</string>
+    <string name="message_loading">Loading...</string>
+    <string name="message_no_data">No data available</string>
+    
+    <!-- Placeholders -->
+    <string name="placeholder_search">Search...</string>
+    <string name="placeholder_enter_email">Enter your email</string>
+    
+    <!-- Plurals -->
+    <plurals name="items_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    
+    <plurals name="notifications">
+        <item quantity="one">%d notification</item>
+        <item quantity="other">%d notifications</item>
+    </plurals>
+    
+    <!-- Arrays -->
+    <string-array name="languages">
+        <item>English</item>
+        <item>Russian</item>
+        <item>Spanish</item>
+        <item>French</item>
+    </string-array>
+</resources>
