@@ -4,7 +4,7 @@ import { TranslationProvider, TranslationBatch, TranslationResult } from '../../
  * Базовый класс для провайдеров перевода
  */
 export abstract class BaseTranslationProvider implements TranslationProvider {
-  abstract readonly name: 'openai' | 'anthropic' | 'qwen' | 'gemini' | 'openrouter';
+  abstract readonly name: 'openai' | 'anthropic' | 'openrouter';
   
   /**
    * Системный промпт для переводчика

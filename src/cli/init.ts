@@ -77,16 +77,8 @@ export const initCommand = new Command('init')
         message: 'Which AI provider to use?',
         choices: [
           { 
-            name: 'Qwen (Recommended - Free 1M tokens)', 
-            value: 'qwen' 
-          },
-          { 
-            name: 'OpenRouter (Gemma, Llama, Mistral - Free tier)', 
+            name: 'OpenRouter (GPT-oss, Llama, Qwen - Free tier)', 
             value: 'openrouter' 
-          },
-          { 
-            name: 'Gemini (Google - Free tier)', 
-            value: 'gemini' 
           },
           { 
             name: 'OpenAI (Requires API key)', 
@@ -97,7 +89,7 @@ export const initCommand = new Command('init')
             value: 'anthropic' 
           }
         ],
-        default: 'qwen'
+        default: 'openrouter'
       },
       {
         type: 'input',
@@ -119,14 +111,8 @@ export const initCommand = new Command('init')
     // Determine default model based on provider
     let defaultModel: string;
     switch (answers.provider) {
-      case 'qwen':
-        defaultModel = 'qwen3-max';
-        break;
-      case 'gemini':
-        defaultModel = 'gemini-3.1-flash-lite';
-        break;
       case 'openrouter':
-        defaultModel = 'google/gemma-3-27b-it:free';
+        defaultModel = 'openai/gpt-oss-120b:free';
         break;
       case 'openai':
         defaultModel = 'gpt-4o-mini';
@@ -135,7 +121,7 @@ export const initCommand = new Command('init')
         defaultModel = 'claude-haiku-20240307';
         break;
       default:
-        defaultModel = 'qwen3-max';
+        defaultModel = 'openai/gpt-oss-120b:free';
     }
 
     // Create .i18n-ai directory
@@ -181,11 +167,9 @@ export const initCommand = new Command('init')
 
 function getEnvVarName(provider: string): string {
   switch (provider) {
-    case 'qwen': return 'QWEN_API_KEY';
-    case 'gemini': return 'GEMINI_API_KEY';
     case 'openrouter': return 'OPENROUTER_API_KEY';
     case 'openai': return 'OPENAI_API_KEY';
     case 'anthropic': return 'ANTHROPIC_API_KEY';
-    default: return 'QWEN_API_KEY';
+    default: return 'OPENROUTER_API_KEY';
   }
 }

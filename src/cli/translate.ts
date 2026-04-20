@@ -39,8 +39,6 @@ export const translateCommand = new Command('translate')
         logger.criticalError(
           'API Keys Not Configured',
           `Please set one of the following environment variables:\n` +
-          `  - QWEN_API_KEY\n` +
-          `  - GEMINI_API_KEY\n` +
           `  - OPENROUTER_API_KEY\n` +
           `  - OPENAI_API_KEY\n` +
           `  - ANTHROPIC_API_KEY\n\n` +
@@ -120,7 +118,7 @@ export const translateCommand = new Command('translate')
         
         try {
           // === ИСПРАВЛЕНИЕ КОНТЕКСТА (Проблема 6) ===
-          const contextRules = getContextRulesForBatch(batch, config.contextRules);
+          const contextRules = getContextRulesForBatch(batch, config.contextRules as Record<string, string>);
           
           const results = await failoverManager.translateWithFailover(batch, contextRules);
           allResults.push(...results);
@@ -194,8 +192,6 @@ export const translateCommand = new Command('translate')
 function checkApiKeys(provider: string): { hasValidKey: boolean; availableProviders: string[] } {
   const availableProviders: string[] = [];
   
-  if (process.env.QWEN_API_KEY) availableProviders.push('qwen');
-  if (process.env.GEMINI_API_KEY) availableProviders.push('gemini');
   if (process.env.OPENROUTER_API_KEY) availableProviders.push('openrouter');
   if (process.env.OPENAI_API_KEY) availableProviders.push('openai');
   if (process.env.ANTHROPIC_API_KEY) availableProviders.push('anthropic');

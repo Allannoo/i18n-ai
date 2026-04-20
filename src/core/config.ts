@@ -14,8 +14,8 @@ const CONFIG_FILENAMES = [
 const DEFAULT_CONFIG: Partial<I18nConfig> = {
   sourceLang: 'en',
   targetLangs: ['ru', 'de'],
-  provider: 'qwen',
-  model: 'qwen3-max',
+  provider: 'openrouter',
+  model: 'openai/gpt-oss-120b:free',
   contextRules: {
     button: 'Translate as verb-command, short',
     error: 'Translate as problem description',
@@ -154,7 +154,7 @@ export function validateConfig(config: I18nConfig): string[] {
     errors.push('targetLangs must contain at least one language');
   }
 
-  const validProviders: AIProvider[] = ['openai', 'anthropic', 'qwen', 'gemini', 'openrouter'];
+  const validProviders: AIProvider[] = ['openai', 'anthropic', 'openrouter'];
   if (!validProviders.includes(config.provider)) {
     errors.push(`Invalid provider: ${config.provider}. Must be one of: ${validProviders.join(', ')}`);
   }

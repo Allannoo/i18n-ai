@@ -1,23 +1,23 @@
 import { TranslationBatch, TranslationResult } from '../../types';
 import { BaseTranslationProvider } from './base';
 import { logger } from '../../utils/logger';
+import { OpenRouter } from '@openrouter/sdk';
 
 /**
- * OpenRouter провайдер для перевода (поддерживает Gemma 4, Llama, Mistral и др.)
- * API совместим с OpenAI
+ * OpenRouter провайдер для перевода
+ * Использует официальный @openrouter/sdk
+ * Модели: gpt-oss-120b, llama-3.3-70b, qwen3-next-80b (все free)
  */
 export class OpenRouterProvider extends BaseTranslationProvider {
   readonly name: 'openrouter' = 'openrouter';
   
-  private apiKey: string;
+  private client: OpenRouter;
   private model: string;
-  private baseUrl: string = 'https://openrouter.ai/api/v1';
 
   private static readonly MODELS = [
-    { code: 'google/gemma-3-27b-it:free', priority: 1 },
-    { code: 'google/gemma-3-12b-it:free', priority: 2 },
-    { code: 'meta-llama/llama-4-maverick:free', priority: 3 },
-    { code: 'mistralai/mistral-small-3.1-24b-instruct:free', priority: 4 },
+    { code: 'openai/gpt-oss-120b:free', priority: 1 },
+    { code: 'meta-llama/llama-3.3-70b-instruct:free', priority: 2 },
+    { code: 'qwen/qwen3-next-80b-a3b-instruct:free', priority: 3 },
   ];
 
   private currentModelIndex: number = 0;
@@ -32,13 +32,10 @@ export class OpenRouterProvider extends BaseTranslationProvider {
       );
     }
     
-    this.apiKey = key;
+    this.client = new OpenRouter({ apiKey: key });
     this.model = model || OpenRouterProvider.MODELS[0].code;
   }
 
-  /**
-   * Переводит батч строк используя OpenRouter API
-   */
   async translate(batch: TranslationBatch, context?: string): Promise<TranslationResult[]> {
     const strings = batch.strings.map(s => ({ key: s.key, value: s.value }));
     
@@ -55,46 +52,21 @@ export class OpenRouterProvider extends BaseTranslationProvider {
       try {
         const currentModel = this.getCurrentModel();
         
-        const response = await fetch(`${this.baseUrl}/chat/completions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.apiKey}`,
-            'HTTP-Referer': 'https://github.com/Allannoo/i18n-ai',
-            'X-Title': 'i18n-ai'
-          },
-          body: JSON.stringify({
+        const result = await this.client.chat.send({
+          chatRequest: {
             model: currentModel.code,
             messages: [
-              {
-                role: 'system',
-                content: this.systemPrompt
-              },
-              {
-                role: 'user',
-                content: userPrompt
-              }
+              { role: 'system', content: this.systemPrompt },
+              { role: 'user', content: userPrompt }
             ],
             temperature: 0.3,
-            max_tokens: 4000
-          })
+            stream: false,
+          },
+          httpReferer: 'https://github.com/Allannoo/i18n-ai',
+          appTitle: 'i18n-ai',
         });
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          
-          if (response.status === 429) {
-            logger.warn(`Model ${currentModel.code} rate limit exceeded. Switching...`);
-            this.switchToNextModel();
-            lastError = new Error('Rate limit exceeded');
-            continue;
-          }
-          
-          throw new Error(`OpenRouter API error: ${response.status} ${errorData.error?.message || response.statusText}`);
-        }
-
-        const data = await response.json();
-        const content = data.choices?.[0]?.message?.content;
+        const content = (result as any).choices?.[0]?.message?.content;
         
         if (!content) {
           logger.warn('Empty response from OpenRouter');
@@ -105,13 +77,16 @@ export class OpenRouterProvider extends BaseTranslationProvider {
 
       } catch (error) {
         lastError = error instanceof Error ? error : new Error('Unknown error');
+        const msg = lastError.message.toLowerCase();
         
-        if (lastError.message.includes('rate limit') || lastError.message.includes('429')) {
+        if (msg.includes('rate limit') || msg.includes('429') || msg.includes('quota')) {
+          logger.warn(`Model ${this.getCurrentModel().code} rate limited. Switching...`);
           this.switchToNextModel();
           continue;
         }
         
-        if (lastError.message.includes('unavailable') || lastError.message.includes('503')) {
+        if (msg.includes('unavailable') || msg.includes('503') || msg.includes('502')) {
+          logger.warn(`Model ${this.getCurrentModel().code} unavailable. Switching...`);
           this.switchToNextModel();
           continue;
         }
@@ -139,12 +114,14 @@ export class OpenRouterProvider extends BaseTranslationProvider {
 
   async checkAvailability(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.baseUrl}/models`, {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`
-        }
+      const result = await this.client.chat.send({
+        chatRequest: {
+          model: this.model,
+          messages: [{ role: 'user', content: 'ping' }],
+          stream: false,
+        },
       });
-      return response.ok;
+      return !!(result as any).choices?.[0]?.message?.content;
     } catch {
       return false;
     }

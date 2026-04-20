@@ -4,7 +4,7 @@
 
 export type Framework = 'flutter' | 'react' | 'vue' | 'android' | 'ios' | 'react-native';
 
-export type AIProvider = 'openai' | 'anthropic' | 'qwen' | 'gemini' | 'openrouter';
+export type AIProvider = 'openai' | 'anthropic' | 'openrouter';
 
 export interface ContextRules {
   button?: string;

@@ -5,8 +5,6 @@ export default BaseTranslationProvider;
 // Провайдеры
 export { OpenAIProvider } from './openai';
 export { AnthropicProvider } from './anthropic';
-export { QwenProvider } from './qwen';
-export { GeminiProvider } from './gemini';
 export { OpenRouterProvider } from './openrouter';
 
 // Утилиты
