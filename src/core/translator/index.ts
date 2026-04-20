@@ -1,5 +1,6 @@
 // Базовый класс
-export { BaseTranslationProvider } from './base';
+import { BaseTranslationProvider } from './base';
+export { BaseTranslationProvider };
 export default BaseTranslationProvider;
 
 // Провайдеры

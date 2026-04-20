@@ -86,14 +86,21 @@ export class ModelRegistry {
     const currentProvider = this.getCurrentProvider();
     const models = this.getModelsForProvider(currentProvider);
     if (models.length === 0) {
+      // Пробуем другие провайдеры, но с защитой от бесконечной рекурсии
+      const startIndex = this.currentProviderIndex;
       this.switchProvider();
-      return this.getNextModel();
+      if (this.currentProviderIndex === startIndex) return null;
+      const nextModels = this.getModelsForProvider(this.getCurrentProvider());
+      return nextModels.length > 0 ? nextModels[0] : null;
     }
     if (!currentModel) return models[0];
     const currentIndex = models.findIndex(m => m.code === currentModel);
     if (currentIndex === -1 || currentIndex >= models.length - 1) {
+      const startIndex = this.currentProviderIndex;
       this.switchProvider();
-      return this.getNextModel();
+      if (this.currentProviderIndex === startIndex) return null;
+      const nextModels = this.getModelsForProvider(this.getCurrentProvider());
+      return nextModels.length > 0 ? nextModels[0] : null;
     }
     return models[currentIndex + 1];
   }

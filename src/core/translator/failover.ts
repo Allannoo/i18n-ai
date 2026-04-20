@@ -57,35 +57,37 @@ export class FailoverManager {
     let switchedModels = 0;
 
     while (attempts < this.maxRetries) {
-      try {
+      const currentProviderName = modelRegistry.getCurrentProvider();
+      const provider = this.getProviderForModel(currentProviderName, this.currentModel);
+
+      if (!provider) {
+        logger.warn(`Provider ${currentProviderName} not available`);
+        modelRegistry.switchProvider();
         attempts++;
-        const currentProviderName = modelRegistry.getCurrentProvider();
-        const provider = this.getProviderForModel(currentProviderName, this.currentModel);
+        continue;
+      }
 
-        if (!provider) {
-          logger.warn(`Provider ${currentProviderName} not available`);
-          modelRegistry.switchProvider();
-          continue;
-        }
+      const estimatedTokens = this.estimateTokens(batch);
+      const limitCheck = modelRegistry.updateUsage(this.currentModel || 'unknown', estimatedTokens);
+      
+      if (!limitCheck.success) {
+        logger.warn(`Limit check failed: ${limitCheck.reason}`);
+        this.switchToNextModel();
+        switchedModels++;
+        attempts++;
+        continue;
+      }
 
-        const estimatedTokens = this.estimateTokens(batch);
-        const limitCheck = modelRegistry.updateUsage(this.currentModel || 'unknown', estimatedTokens);
-        
-        if (!limitCheck.success) {
-          logger.warn(`Limit check failed: ${limitCheck.reason}`);
-          this.switchToNextModel();
-          switchedModels++;
-          continue;
-        }
-
+      try {
         const result = await provider.translate(batch, context);
         if (result.length > 0) {
           return result;
         }
         lastError = new Error('Empty response from provider');
-        
+        attempts++;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error('Unknown error');
+        attempts++;
         if (this.isRetryableError(lastError)) {
           this.switchToNextModel();
           switchedModels++;
@@ -137,7 +139,9 @@ export class FailoverManager {
 
   private isRetryableError(error: Error): boolean {
     const message = error.message.toLowerCase();
-    return message.includes('quota') || message.includes('limit') ||
+    const statusCode = (error as { statusCode?: number }).statusCode;
+    return statusCode === 429 || statusCode === 503 || statusCode === 502 ||
+           message.includes('quota') || message.includes('limit') ||
            message.includes('rate limit') || message.includes('429') ||
            message.includes('unavailable') || message.includes('503') ||
            message.includes('502') || message.includes('timeout');
@@ -175,7 +179,11 @@ export class FailoverManager {
   async checkProviders(): Promise<Record<string, boolean>> {
     const result: Record<string, boolean> = {};
     for (const [name, provider] of this.providers.entries()) {
-      result[name] = await provider.checkAvailability!().catch(() => false);
+      if (provider.checkAvailability) {
+        result[name] = await provider.checkAvailability().catch(() => false);
+      } else {
+        result[name] = true;
+      }
     }
     return result;
   }
